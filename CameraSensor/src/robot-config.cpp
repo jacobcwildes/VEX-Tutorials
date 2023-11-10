@@ -20,10 +20,10 @@ motor RightDriveSmart = motor(PORT21, ratio18_1, true);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 40, mm, 1);
 controller Controller1 = controller(primary);
 motor Motor1 = motor(PORT10, ratio18_1, true);
-motor Motor10 = motor(PORT1, ratio18_1, false);
+motor Motor10 = motor(PORT2, ratio18_1, false);
 motor Motor6 = motor(PORT7, ratio18_1, false);
 distance Distance3 = distance(PORT3);
-gps GPS11 = gps(PORT11, 0.00, 0.00, mm, 180);
+gps GPS16 = gps(PORT16, 0.00, 0.00, mm, 180);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

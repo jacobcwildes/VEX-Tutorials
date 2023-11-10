@@ -19,7 +19,7 @@ extern motor Motor1;
 extern motor Motor10;
 extern motor Motor6;
 extern distance Distance3;
-extern gps GPS11;
+extern gps GPS16;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
