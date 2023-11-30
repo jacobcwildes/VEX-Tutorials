@@ -2,6 +2,16 @@
 
 int notSeen = 0; //Track how many times we haven't seen a ball
 int seenFirst = 0;
+
+//Turn manipulators for when we are in a close focal distance
+int leftAdder = 0;
+int rightAdder = 0;
+int forwardAdder = 0;
+
+int rangeVal = 20;
+int adderVal = 8;
+int forwardadderVal = 60;
+bool leftRight = false; //Keeps track of which way we should spin based on the last time the ball was seen
 void autonomy(void)
 {
     //Vision Sensor logic:
@@ -26,6 +36,7 @@ void autonomy(void)
 
         if((int)Vision4.objects[0].centerX < 120) //Spin left if ball too far left
         {
+          leftRight = false;
           Motor10.setVelocity(-3, percent);
           Motor1.setVelocity(3, percent);
           Motor1.spin(forward);
@@ -34,6 +45,7 @@ void autonomy(void)
         }
         else if((int)Vision4.objects[0].centerX > 180) //Spin right if ball too far right
         {
+          leftRight = true;
           Motor10.setVelocity(3, percent);
           Motor1.setVelocity(-3, percent);
           Motor1.spin(forward);
@@ -42,15 +54,33 @@ void autonomy(void)
         }
         else
         {
-          Motor1.setVelocity(20, percent);
-          Motor10.setVelocity(20, percent);
+          if((int)Vision4.objects[0].centerX < 150)
+          {
+            leftAdder = -adderVal;
+            rightAdder = adderVal;
+          }
+          else if((int)Vision4.objects[0].centerX > 150)
+          {
+            leftAdder = adderVal;
+            rightAdder = -adderVal;
+          }
+          if(((int)Vision4.objects[0].centerX > 150 - rangeVal) && ((int)Vision4.objects[0].centerX < 150 + rangeVal)) forwardAdder = forwardadderVal;
+          
+          else forwardAdder = 0;
+
+          Motor1.setVelocity(forwardAdder + rightAdder, percent);
+          Motor10.setVelocity(forwardAdder + leftAdder, percent);
           Motor1.spin(forward);
           Motor10.spin(forward);
+          leftAdder = 0;
+          rightAdder = 0;
         }
       }
       else
       {
         Motor6.spinFor(forward, 60, degrees);
+        Motor1.setStopping(brake);
+        Motor10.setStopping(brake);
         Motor1.stop();
         Motor10.stop();
       }
@@ -60,11 +90,24 @@ void autonomy(void)
     {
       if(notSeen > 10)
       {
-        Motor6.stop();
-        Motor1.spin(forward);
-        Motor1.setVelocity(30, percent);
-        Motor10.spin(forward);
-        Motor10.setVelocity(-30, percent);
+        if(leftRight == false) //Spin to the left to find the ball
+        {
+          Motor6.stop();
+          Motor1.spin(forward);
+          Motor1.setVelocity(20, percent);
+          Motor10.spin(forward);
+          Motor10.setVelocity(-20, percent);
+
+        }
+        if(leftRight == true) //Spin to the right to find the ball
+        {
+          Motor6.stop();
+          Motor1.spin(forward);
+          Motor1.setVelocity(-20, percent);
+          Motor10.spin(forward);
+          Motor10.setVelocity(20, percent);
+
+        }
       }
       notSeen++;
       seenFirst = 0;
