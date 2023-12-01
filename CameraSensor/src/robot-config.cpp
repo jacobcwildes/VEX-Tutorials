@@ -23,7 +23,8 @@ motor Motor1 = motor(PORT10, ratio18_1, true);
 motor Motor10 = motor(PORT2, ratio18_1, false);
 motor Motor6 = motor(PORT7, ratio18_1, false);
 distance Distance3 = distance(PORT3);
-gps GPS16 = gps(PORT16, 0.00, 0.00, mm, 180);
+inertial Inertial16 = inertial(PORT16);
+gps GPS14 = gps(PORT14, 0.00, 0.00, mm, 180);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

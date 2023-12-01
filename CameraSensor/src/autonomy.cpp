@@ -1,4 +1,5 @@
 #include "vex.h"
+#include "autonomy.h"
 
 int notSeen = 0; //Track how many times we haven't seen a ball
 int seenFirst = 0;
@@ -12,7 +13,7 @@ int rangeVal = 20;
 int adderVal = 8;
 int forwardadderVal = 60;
 bool leftRight = false; //Keeps track of which way we should spin based on the last time the ball was seen
-void autonomy(void)
+void autonomy(imuDat *imuData)
 {
     //Vision Sensor logic:
 

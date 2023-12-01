@@ -17,7 +17,8 @@
 // Motor10              motor         2               
 // Motor6               motor         7               
 // Distance3            distance      3               
-// GPS16                gps           16              
+// Inertial16           inertial      16              
+// GPS14                gps           14              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -31,6 +32,7 @@ int main() {
 
   ConDat controllerData;
   SenseDat sensorData;
+  imuDat imuData;
 
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -46,7 +48,7 @@ int main() {
   {
     if(controllerTime == 0)
     {
-      autonomy();
+      autonomy(&imuData);
     }
    
     if(abs(Controller1.Axis3.position(percent)) > 0 || abs(Controller1.Axis1.position(percent)) > 0 || controllerTime == 1)

@@ -1,1 +1,2 @@
-void autonomy(void);
+#include "imu.h"
+void autonomy(imuDat *imuData);
