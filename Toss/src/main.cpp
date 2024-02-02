@@ -12,6 +12,7 @@
 // [Name]               [Type]        [Port(s)]
 // Tosser               motor_group   1, 2            
 // Controller1          controller                    
+// Drivetrain           drivetrain    3, 4, 5, 6      
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -34,9 +35,21 @@ int main() {
   - Add another button that allows the user to set the "home" position manually
   */
   
+  int forwardbackDirection = 0;
+
+  int leftrightDirection = 0;
+
   while(1)
   {
     
+    forwardbackDirection = Controller1.Axis3.position(percent);
+
+    leftrightDirection = Controller1.Axis1.position(percent);
+
+    Drivetrain.setDriveVelocity(forwardbackDirection, percent);
+
+    Drivetrain.setTurnVelocity(leftrightDirection, percent);
+
     if(Controller1.ButtonR2.pressing())
     {
       Tosser.setMaxTorque(100, percent); //This may change later, just super high to start
