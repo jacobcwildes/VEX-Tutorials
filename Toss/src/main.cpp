@@ -10,9 +10,9 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Tosser               motor_group   1, 2            
+// Tosser               motor_group   8, 19           
 // Controller1          controller                    
-// Drivetrain           drivetrain    3, 4, 5, 6      
+// Drivetrain           drivetrain    1, 9, 2, 10     
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -41,27 +41,34 @@ int main() {
 
   while(1)
   {
-    
-    forwardbackDirection = Controller1.Axis3.position(percent);
 
     leftrightDirection = Controller1.Axis1.position(percent);
+    forwardbackDirection = Controller1.Axis3.position(percent);
 
-    Drivetrain.setDriveVelocity(forwardbackDirection, percent);
+    if(forwardbackDirection)
+    {
+      Drivetrain.setDriveVelocity(forwardbackDirection, percent);
+      Drivetrain.drive(forward);
+    }
 
-    Drivetrain.setTurnVelocity(leftrightDirection, percent);
+    if(leftrightDirection)
+    {
+      Drivetrain.setTurnVelocity(leftrightDirection, percent);
+      Drivetrain.turn(right);
+    }
 
     if(Controller1.ButtonR2.pressing())
     {
-      Tosser.setMaxTorque(100, percent); //This may change later, just super high to start
-      Tosser.setVelocity(100, percent); //May change
+      Tosser.setMaxTorque(70, percent); //This may change later, just super high to start
+      Tosser.setVelocity(70, percent); //May change
       Tosser.setPosition(0, degrees); //In theory, tell motors they are "homed"
       Tosser.spinFor(forward, 120, degrees); //May want to change the degrees forward it spins
     }
     
     if(Controller1.ButtonR1.pressing())
     {
-      Tosser.setMaxTorque(33, percent); //Returning home, so torque can be much lower
-      Tosser.setVelocity(20, percent); //Speed can be much lower on return
+      Tosser.setMaxTorque(50, percent); //Returning home, so torque can be much lower
+      Tosser.setVelocity(50, percent); //Speed can be much lower on return
       Tosser.spinFor(reverse, 120, degrees); //In theory, returns home
     }
 

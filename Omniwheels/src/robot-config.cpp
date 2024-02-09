@@ -8,23 +8,19 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-motor TosserMotorA = motor(PORT8, ratio18_1, false);
-motor TosserMotorB = motor(PORT19, ratio18_1, true);
-motor_group Tosser = motor_group(TosserMotorA, TosserMotorB);
-controller Controller1 = controller(primary);
-motor leftMotorA = motor(PORT1, ratio18_1, false);
-motor leftMotorB = motor(PORT9, ratio18_1, false);
-motor_group LeftDriveSmart = motor_group(leftMotorA, leftMotorB);
-motor rightMotorA = motor(PORT2, ratio18_1, true);
-motor rightMotorB = motor(PORT10, ratio18_1, true);
-motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
+motor LeftFront = motor(PORT1, ratio18_1, false);
+motor LeftRear = motor(PORT2, ratio18_1, false);
+motor RightFront = motor(PORT3, ratio18_1, false);
+motor RightRear = motor(PORT4, ratio18_1, false);
+motor LeftDriveSmart = motor(PORT21, ratio18_1, false);
+motor RightDriveSmart = motor(PORT20, ratio18_1, true);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 40, mm, 1);
+controller Controller1 = controller(primary);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
 bool RemoteControlCodeEnabled = true;
 // define variables used for controlling motors based on controller inputs
-bool Controller1RightShoulderControlMotorsStopped = true;
 bool DrivetrainLNeedsToBeStopped_Controller1 = true;
 bool DrivetrainRNeedsToBeStopped_Controller1 = true;
 
@@ -76,18 +72,6 @@ int rc_auto_loop_function_Controller1() {
       if (DrivetrainRNeedsToBeStopped_Controller1) {
         RightDriveSmart.setVelocity(drivetrainRightSideSpeed, percent);
         RightDriveSmart.spin(forward);
-      }
-      // check the ButtonR1/ButtonR2 status to control Tosser
-      if (Controller1.ButtonR1.pressing()) {
-        Tosser.spin(reverse);
-        Controller1RightShoulderControlMotorsStopped = false;
-      } else if (Controller1.ButtonR2.pressing()) {
-        Tosser.spin(forward);
-        Controller1RightShoulderControlMotorsStopped = false;
-      } else if (!Controller1RightShoulderControlMotorsStopped) {
-        Tosser.stop();
-        // set the toggle so that we don't constantly tell the motor to stop when the buttons are released
-        Controller1RightShoulderControlMotorsStopped = true;
       }
     }
     // wait before repeating the process
