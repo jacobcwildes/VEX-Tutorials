@@ -16,13 +16,13 @@ motor LeftDriveSmart = motor(PORT21, ratio18_1, false);
 motor RightDriveSmart = motor(PORT20, ratio18_1, true);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 40, mm, 1);
 controller Controller1 = controller(primary);
-motor Ratchet = motor(PORT5, ratio18_1, false);
+motor Ratchet = motor(PORT5, ratio36_1, false);
 /*vex-vision-config:begin*/
 signature Vision4__SIG_1 = signature (1, -6553, -5761, -6158, -5575, -4647, -5110, 2.5, 0);
 vision Vision4 = vision (PORT6, 50, Vision4__SIG_1);
 /*vex-vision-config:end*/
 distance Distance3 = distance(PORT7);
-motor Catapult = motor(PORT8, ratio18_1, false);
+motor Catapult = motor(PORT8, ratio36_1, true);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
