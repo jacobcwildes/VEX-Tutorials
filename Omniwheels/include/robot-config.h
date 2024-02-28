@@ -9,7 +9,6 @@ extern motor LeftFront;
 extern motor LeftRear;
 extern motor RightFront;
 extern motor RightRear;
-extern drivetrain Drivetrain;
 extern controller Controller1;
 extern motor Ratchet;
 extern signature Vision4__SIG_1;
@@ -22,6 +21,7 @@ extern signature Vision4__SIG_7;
 extern vision Vision4;
 extern distance Distance3;
 extern motor Catapult;
+extern motor Catapult2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
