@@ -38,7 +38,6 @@ struct movements{
 
 void motorVals(movements *vals);
 void moveForwardBack(movements *vals);
-void moveLeftRight(movements *vals);
 void moveStrafe(movements *vals);
 int deadZone = 5;
 
@@ -97,13 +96,13 @@ int main() {
        // controllerTime = 1;
       //}
 
-      if(Controller1.ButtonR2.pressing())
+      if(Controller1.ButtonR2.pressing()) //Release ratchet
       {
         Ratchet.spinFor(forward, 15, degrees, false); //release motor to throw
         controllerTime = 1;
       }
 
-      if(Controller1.ButtonR1.pressing())
+      if(Controller1.ButtonR1.pressing()) //Engage ratchet
       {
         Ratchet.spinToPosition(startRatchet, degrees, false); //Need to check motor direction
         Ratchet.setStopping(coast);
@@ -114,29 +113,21 @@ int main() {
       {
         Catapult.setMaxTorque(100, percent);
         Catapult2.setMaxTorque(100, percent);
-        Catapult.spinFor(-200, degrees, false);
-        Catapult2.spinFor(-200, degrees, false);
-        Catapult.setStopping(hold);
-        Catapult2.setStopping(hold);     
+        Catapult.setStopping(coast);
+        Catapult2.setStopping(coast); 
+        Catapult.spin(forward);
+        Catapult2.spin(forward);    
       }
 
       if(Controller1.ButtonL1.pressing()) //Release
       {
         Catapult.setMaxTorque(100, percent);
         Catapult2.setMaxTorque(100, percent);
-        Catapult.spinFor(300, degrees, false);
-        Catapult2.spinFor(300, degrees, false);
         Catapult.setStopping(coast);
         Catapult2.setStopping(coast);
+        Catapult.spin(forward);
+        Catapult2.spin(forward);
       }
-
-      //Stop all motors if not getting input
-      //Catapult.stop();
-      //Ratchet.stop();
-      //RightFront.stop();
-      //RightRear.stop();
-      //LeftFront.stop();
-      //LeftRear.stop();
 
   }
   
@@ -250,43 +241,6 @@ void moveForwardBack(movements *vals)
 
 }
 
-void moveLeftRight(movements *vals)
-{
-    if(vals->leftRight > 0) //Want to turn right
-    {
-      //Set proper velocities
-      LeftFront.setVelocity(vals->forwardBackward - vals->leftRight, percent);
-      LeftRear.setVelocity(vals->forwardBackward - vals->leftRight, percent);
-      RightFront.setVelocity(vals->forwardBackward + vals->leftRight, percent);
-      RightRear.setVelocity(vals->forwardBackward + vals->leftRight, percent);
-
-      //Turn right
-      LeftFront.spin(forward);
-      LeftRear.spin(forward);
-
-      //These two need to be in reverse to turn properly
-      RightFront.spin(reverse);
-      RightRear.spin(reverse);
-    }
-
-    else //Otherwise turn left
-    {
-      //Set proper velocities
-      LeftFront.setVelocity(vals->leftRight, percent);
-      LeftRear.setVelocity(vals->leftRight, percent);
-      RightFront.setVelocity(vals->leftRight, percent);
-      RightRear.setVelocity(vals->leftRight, percent);
-
-      //Turn left
-      LeftFront.spin(reverse);
-      LeftRear.spin(reverse);
-
-      //These two need to be in reverse to turn properly
-      RightFront.spin(forward);
-      RightRear.spin(forward);
-    }
-}
-
 void moveStrafe(movements *vals)
 {
   if(vals->strafeLeftRight > 0) //Strafe right
@@ -304,7 +258,7 @@ void moveStrafe(movements *vals)
     RightRear.spin(forward);
   }
 
-  else //Straft Left
+  else //Strafe Left
   {
     //Set velocities
     LeftFront.setVelocity(vals->strafeLeftRight, percent);
