@@ -113,20 +113,20 @@ int main() {
       {
         Catapult.setMaxTorque(100, percent);
         Catapult2.setMaxTorque(100, percent);
+        Catapult.spinFor(-200, degrees, false);
+        Catapult2.spinFor(-200, degrees, false);
         Catapult.setStopping(coast);
-        Catapult2.setStopping(coast); 
-        Catapult.spin(forward);
-        Catapult2.spin(forward);    
+        Catapult2.setStopping(coast);     
       }
 
       if(Controller1.ButtonL1.pressing()) //Release
       {
         Catapult.setMaxTorque(100, percent);
         Catapult2.setMaxTorque(100, percent);
+        Catapult.spinFor(200, degrees, false);
+        Catapult2.spinFor(200, degrees, false);
         Catapult.setStopping(coast);
         Catapult2.setStopping(coast);
-        Catapult.spin(forward);
-        Catapult2.spin(forward);
       }
 
   }
