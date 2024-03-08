@@ -39,6 +39,7 @@ struct movements{
 void motorVals(movements *vals);
 void moveForwardBack(movements *vals);
 void moveStrafe(movements *vals);
+void simpleAutonomy(void);
 int deadZone = 5;
 
 int main() {
@@ -65,47 +66,59 @@ int main() {
   startCatapult = Catapult.position(degrees);
   Ratchet.setStopping(coast); //Make sure the ratchet motor can free spin
 
+  //Spin catapult down to go under pole
+  Catapult.setMaxTorque(100, percent);
+  Catapult2.setMaxTorque(100, percent);
+  Catapult.spinFor(-200, degrees, false);
+  Catapult2.spinFor(-200, degrees, false);
+  task::sleep(5000);
+  Catapult.setVelocity(-25, percent);
+  Catapult2.setVelocity(-25, percent);
+  //Catapult.spin(forward);
+  //Catapult.spin(forward);
+  //Catapult.setStopping(coast);
+  //Catapult2.setStopping(coast);
+  //task::sleep(1000);//sleeps for .5 second     
+  Ratchet.spinToPosition(startRatchet, degrees, false); //Need to check motor direction
+  Ratchet.setStopping(coast);
+
+  simpleAutonomy();
+
+  Ratchet.spinFor(forward, 30, degrees); //release motor to throw and block
+  task::sleep(500);//sleeps for .5 second
+  Catapult.setMaxTorque(100, percent);
+  Catapult2.setMaxTorque(100, percent);
+  Catapult.setVelocity(100, percent);
+  Catapult2.setVelocity(100, percent);
+  Catapult.spinToPosition(startCatapult, degrees, false);
+  Catapult2.spinToPosition(startCatapult, degrees, false);
+  Catapult.setStopping(coast);
+  Catapult2.setStopping(coast);
+
   while(1)
   {
      Ratchet.setStopping(coast); //Make sure the ratchet motor can free spin
      //Brain.Screen.clearScreen();
 
-      //if(controllerTime == 0)
-      //{
-      //  autonomy();
-      //}
-
+      /*
+      if(controllerTime == 0)
+      {
+        autonomy();
+      }
+      */
       
       motorVals(&motors);
 
-      //if(motors.forwardBackward != 0)
-      //{
-        moveForwardBack(&motors);
-       // controllerTime = 1;
-      //}
-
-      //if(motors.leftRight != 0)
-      //{
-        //moveLeftRight(&motors);
-        //controllerTime = 1;
-      //}
-
-      //if(motors.strafeLeftRight != 0)
-      //{
-        //moveStrafe(&motors);
-       // controllerTime = 1;
-      //}
-
-      if(Controller1.ButtonR2.pressing()) //Release ratchet
+      if(motors.forwardBackward != 0 || motors.leftRight != 0)
       {
-        Ratchet.spinFor(forward, 15, degrees, false); //release motor to throw
+        moveForwardBack(&motors);
         controllerTime = 1;
       }
 
-      if(Controller1.ButtonR1.pressing()) //Engage ratchet
+
+      if(motors.strafeLeftRight != 0)
       {
-        Ratchet.spinToPosition(startRatchet, degrees, false); //Need to check motor direction
-        Ratchet.setStopping(coast);
+        moveStrafe(&motors);
         controllerTime = 1;
       }
 
@@ -115,18 +128,37 @@ int main() {
         Catapult2.setMaxTorque(100, percent);
         Catapult.spinFor(-200, degrees, false);
         Catapult2.spinFor(-200, degrees, false);
+        Catapult.setVelocity(-25, percent);
+        Catapult2.setVelocity(-25, percent);
+        //Catapult.spin(forward);
+        //Catapult.spin(forward);
         Catapult.setStopping(coast);
-        Catapult2.setStopping(coast);     
+        Catapult2.setStopping(coast);
+        //task::sleep(1000);//sleeps for .5 second     
+        Ratchet.spinToPosition(startRatchet, degrees, false); //Need to check motor direction
+        Ratchet.setStopping(coast);
       }
 
       if(Controller1.ButtonL1.pressing()) //Release
       {
+        Ratchet.spinFor(forward, 30, degrees); //release motor to throw and block
+        task::sleep(500);//sleeps for .5 second
         Catapult.setMaxTorque(100, percent);
         Catapult2.setMaxTorque(100, percent);
-        Catapult.spinFor(200, degrees, false);
-        Catapult2.spinFor(200, degrees, false);
+        Catapult.setVelocity(100, percent);
+        Catapult2.setVelocity(100, percent);
+        Catapult.spinToPosition(startCatapult, degrees, false);
+        Catapult2.spinToPosition(startCatapult, degrees, false);
         Catapult.setStopping(coast);
         Catapult2.setStopping(coast);
+      }
+
+      if(motors.strafeLeftRight == 0 && motors.leftRight == 0 && motors.forwardBackward == 0)
+      {
+        LeftFront.stop();
+        LeftRear.stop();
+        RightFront.stop();
+        RightRear.stop();
       }
 
   }
@@ -247,29 +279,76 @@ void moveStrafe(movements *vals)
   {
     //Set velocities
     LeftFront.setVelocity(vals->strafeLeftRight, percent);
-    LeftRear.setVelocity(vals->strafeLeftRight, percent);
-    RightFront.setVelocity(vals->strafeLeftRight, percent);
+    LeftRear.setVelocity(-vals->strafeLeftRight, percent);
+    RightFront.setVelocity(-vals->strafeLeftRight, percent);
     RightRear.setVelocity(vals->strafeLeftRight, percent);
 
     //Strafe right
     LeftFront.spin(forward);
-    LeftRear.spin(reverse);
-    RightFront.spin(reverse);
+    LeftRear.spin(forward);
+    RightFront.spin(forward);
     RightRear.spin(forward);
   }
 
-  else //Strafe Left
+  if(vals->strafeLeftRight < 0) //Strafe Left
   {
     //Set velocities
     LeftFront.setVelocity(vals->strafeLeftRight, percent);
-    LeftRear.setVelocity(vals->strafeLeftRight, percent);
-    RightFront.setVelocity(vals->strafeLeftRight, percent);
+    LeftRear.setVelocity(-vals->strafeLeftRight, percent);
+    RightFront.setVelocity(-vals->strafeLeftRight, percent);
     RightRear.setVelocity(vals->strafeLeftRight, percent);
 
     //Strafe left
-    LeftFront.spin(reverse);
+    LeftFront.spin(forward);
     LeftRear.spin(forward);
     RightFront.spin(forward);
-    RightRear.spin(reverse);
+    RightRear.spin(forward);
   }
+}
+
+void simpleAutonomy(void)
+{
+  //Go forward into ball THIS WILL NEED TO BE CHANGED BASED ON HOW FAR BALL IS FROM BOT @ START
+  LeftFront.spinFor(forward, 6, turns, false);
+  RightFront.spinFor(forward, 6, turns, false);
+  RightRear.spinFor(forward, 6, turns, false);
+  LeftRear.spinFor(forward, 6, turns, false);
+  
+  task::sleep(7000);
+  
+  //Turn 45* to left
+  RightFront.spinFor(forward, 2, turns, false);
+  RightRear.spinFor(forward, 2, turns, false);
+  
+  task::sleep(4000);
+  
+  //Go forward to goal
+  LeftFront.spinFor(forward, 6, turns, false);
+  RightFront.spinFor(forward, 6, turns, false);
+  RightRear.spinFor(forward, 6, turns, false);
+  LeftRear.spinFor(forward, 6, turns, false);
+
+  task::sleep(7000);
+
+  //Go forward into ball THIS WILL NEED TO BE CHANGED BASED ON HOW FAR BALL IS FROM BOT @ START
+  LeftFront.spinFor(forward, -6, turns, false);
+  RightFront.spinFor(forward, -6, turns, false);
+  RightRear.spinFor(forward, -6, turns, false);
+  LeftRear.spinFor(forward, -6, turns, false);
+  
+  task::sleep(7000);
+  
+  //Turn 45* to left
+  RightFront.spinFor(forward, -2, turns, false);
+  RightRear.spinFor(forward, -2, turns, false);
+  
+  task::sleep(4000);
+  
+  //Back to elevation bar
+  LeftFront.spinFor(forward, -6, turns, false);
+  RightFront.spinFor(forward, -6, turns, false);
+  RightRear.spinFor(forward, -6, turns, false);
+  LeftRear.spinFor(forward, -6, turns, false);
+
+  task::sleep(7000);
 }
